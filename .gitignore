@@ -25,3 +25,7 @@ _testmain.go
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Env files and builded app
+.bin/
+.env
