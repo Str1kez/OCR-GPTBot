@@ -1,5 +1,16 @@
-ocr_url: "https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze"
-jq_template: "[ .results[].results[].textDetection.pages[].blocks[].lines[].words[].text ] | join(\" \")"
-ocr_languages:
-  - "ru"
-  - "eng"
+ocr:
+  ocr_url: "https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze"
+  jq_template: "[ .results[].results[].textDetection.pages[].blocks[].lines[].words[].text ] | join(\" \")"
+  ocr_languages:
+    - "ru"
+    - "en"
+bot:
+  messages:
+    start: "Стартуем\nПиши или отправляй фотку, я разберусь 😎"
+    code: "Вот твой код: "
+  errors:
+    completion: "Не смог получить ответ от chatGPT"
+    sending: "Не смог отправить тебе ответ"
+    converting: "Не смог обработать фотку"
+    parsing: "Не смог распознать текст на фотке"
+

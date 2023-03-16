@@ -19,20 +19,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	chat := chatgpt.NewChatGPT(cfg.OpenAIToken)
-	recognitionClient := ocr.NewTesseractClient()
+	chatCompletionClient := chatgpt.NewChatCompletionClient(cfg.OpenAIToken)
+	recognitionClient := ocr.NewYandexOCRClient(&cfg.OCR)
 
 	botSettings := telebot.Settings{
-		Token:  cfg.BotToken,
+		Token:  cfg.Bot.Token,
 		Poller: &telebot.LongPoller{Timeout: time.Minute},
 	}
-	bot, err := telegram.NewBot(botSettings, chat, recognitionClient)
+	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	bot.InitCommands()
-	bot.InitHandlers(cfg.Admins)
+	bot.InitHandlers()
 	bot.Start()
 }

@@ -5,9 +5,9 @@ import (
 	"gopkg.in/telebot.v3/middleware"
 )
 
-func (b *Bot) InitHandlers(admins []int64) {
+func (b *Bot) InitHandlers() {
 	authorizedGroup := b.bot.Group()
-	authorizedGroup.Use(middleware.Whitelist(admins...))
+	authorizedGroup.Use(middleware.Whitelist(b.config.Admins...))
 	authorizedGroup.Use(PrivateChatOnly)
 
 	authorizedGroup.Handle(telebot.OnText, b.completionOnTextHandler)
@@ -15,11 +15,21 @@ func (b *Bot) InitHandlers(admins []int64) {
 }
 
 func (b *Bot) completionOnTextHandler(c telebot.Context) error {
-	go b.textCompletion(c)
+	go func() {
+		err := b.textCompletion(c)
+		if err != nil {
+			b.errorHandler(c.Chat().ID, err)
+		}
+	}()
 	return nil
 }
 
 func (b *Bot) completionOnPhotoHandler(c telebot.Context) error {
-	go b.photoCompletion(c)
+	go func() {
+		err := b.photoCompletion(c)
+		if err != nil {
+			b.errorHandler(c.Chat().ID, err)
+		}
+	}()
 	return nil
 }

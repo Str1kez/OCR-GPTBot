@@ -1,13 +1,14 @@
 package telegram
 
 import (
-	chatgpt "github.com/Str1kez/chatGPT-bot/pkg/chatGPT"
+	"github.com/Str1kez/chatGPT-bot/internal/config"
 	"gopkg.in/telebot.v3"
 )
 
 type Bot struct {
 	bot               *telebot.Bot
-	openAI            *chatgpt.ChatGPT
+	config            *config.BotConfig
+	completionClient  completion
 	recognitionClient recognition
 }
 
@@ -15,12 +16,16 @@ type recognition interface {
 	RecognitionFromBytes(photo []byte) (string, error)
 }
 
-func NewBot(settings telebot.Settings, chat *chatgpt.ChatGPT, recognitionClient recognition) (*Bot, error) {
+type completion interface {
+	PerformCompletion(text string) (string, error)
+}
+
+func NewBot(settings telebot.Settings, config *config.BotConfig, chat completion, recognitionClient recognition) (*Bot, error) {
 	bot, err := telebot.NewBot(settings)
 	if err != nil {
 		return nil, err
 	}
-	return &Bot{bot: bot, openAI: chat, recognitionClient: recognitionClient}, nil
+	return &Bot{bot: bot, config: config, completionClient: chat, recognitionClient: recognitionClient}, nil
 }
 
 func (b *Bot) Start() {

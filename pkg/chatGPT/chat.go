@@ -4,10 +4,18 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type ChatGPT struct {
+type ChatCompletionClient struct {
 	client *openai.Client
 }
 
-func NewChatGPT(token string) *ChatGPT {
-	return &ChatGPT{client: openai.NewClient(token)}
+type CompletionClient struct {
+	client *openai.Client
+}
+
+func NewChatCompletionClient(token string) *ChatCompletionClient {
+	return &ChatCompletionClient{client: openai.NewClient(token)}
+}
+
+func NewCompletionClient(token string) *CompletionClient {
+	return &CompletionClient{client: openai.NewClient(token)}
 }

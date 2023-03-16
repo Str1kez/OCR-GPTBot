@@ -6,27 +6,17 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func (c *ChatGPT) CreateCompletion(text string) (openai.CompletionResponse, error) {
+func (c *CompletionClient) CreateCompletion(text string) (openai.CompletionResponse, error) {
 	completionRequest := generateCompletionRequest(text)
 	return c.client.CreateCompletion(context.Background(), completionRequest)
 }
 
-func (c *ChatGPT) CreateChatCompletion(text string) (openai.ChatCompletionResponse, error) {
-	completionRequest := generateChatCompletionRequest(text)
-	return c.client.CreateChatCompletion(context.Background(), completionRequest)
-}
-
-func generateChatCompletionRequest(text string) openai.ChatCompletionRequest {
-	message := openai.ChatCompletionMessage{Role: openai.ChatMessageRoleUser, Content: text}
-	return openai.ChatCompletionRequest{
-		Model:            openai.GPT3Dot5Turbo,
-		Messages:         []openai.ChatCompletionMessage{message},
-		MaxTokens:        2048,
-		Temperature:      0.5,
-		TopP:             1.0,
-		FrequencyPenalty: 0,
-		PresencePenalty:  0,
+func (c *CompletionClient) PerformCompletion(text string) (string, error) {
+	response, err := c.CreateCompletion(text)
+	if err != nil {
+		return "", err
 	}
+	return response.Choices[0].Text, nil
 }
 
 func generateCompletionRequest(text string) openai.CompletionRequest {

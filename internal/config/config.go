@@ -3,16 +3,35 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	OpenAIToken string  `mapstructure:"OPENAI_TOKEN"`
-	BotToken    string  `mapstructure:"BOT_TOKEN"`
-	Admins      []int64 `mapstructure:"ADMINS"`
-	OCRConfig   OCRConfig
+	OpenAIToken string    `mapstructure:"OPENAI_TOKEN"`
+	OCR         OCRConfig `mapstructure:"ocr"`
+	Bot         BotConfig `mapstructure:"bot"`
+}
+
+type BotConfig struct {
+	Token    string        `mapstructure:"BOT_TOKEN"`
+	Admins   []int64       `mapstructure:"ADMINS"`
+	Messages MessageConfig `mapstructure:"messages"`
+	Errors   ErrorConfig   `mapstructure:"errors"`
 }
 
 type OCRConfig struct {
+	YandexToken  string   `mapstructure:"YANDEX_OCR_TOKEN"`
 	OCRUrl       string   `mapstructure:"ocr_url"`
 	JQTemplate   string   `mapstructure:"jq_template"`
 	OCRLanguages []string `mapstructure:"ocr_languages"`
+}
+
+type MessageConfig struct {
+	Start string `mapstructure:"start"`
+	Code  string `mapstructure:"code"`
+}
+
+type ErrorConfig struct {
+	Completion string `mapstructure:"completion"`
+	Sending    string `mapstructure:"sending"`
+	Converting string `mapstructure:"converting"`
+	Parsing    string `mapstructure:"parsing"`
 }
 
 func NewConfig() (*Config, error) {
@@ -27,12 +46,20 @@ func NewConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = viper.Unmarshal(&config.Bot)
+	if err != nil {
+		return nil, err
+	}
+	err = viper.Unmarshal(&config.OCR)
+	if err != nil {
+		return nil, err
+	}
 
 	err = parseConfig()
 	if err != nil {
 		return nil, err
 	}
-	err = viper.Unmarshal(&config.OCRConfig)
+	err = viper.Unmarshal(&config)
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +78,9 @@ func parseEnv() error {
 		return err
 	}
 	if err := viper.BindEnv("ADMINS"); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("YANDEX_OCR_TOKEN"); err != nil {
 		return err
 	}
 	return nil
