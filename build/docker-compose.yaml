@@ -1,0 +1,8 @@
+services:
+  bot:
+    image: str1kez/ocrgpt_bot
+    build: .
+    env_file:
+      - ../.env
+    volumes:
+      - "./config:/app/config"

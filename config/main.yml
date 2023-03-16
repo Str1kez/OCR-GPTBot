@@ -1,0 +1,5 @@
+ocr_url: "https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze"
+jq_template: "[ .results[].results[].textDetection.pages[].blocks[].lines[].words[].text ] | join(\" \")"
+ocr_languages:
+  - "ru"
+  - "eng"

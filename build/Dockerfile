@@ -4,7 +4,7 @@ RUN apk add --no-cache tesseract-ocr-dev tesseract-ocr-data-rus g++
 
 WORKDIR /app
 
-COPY . .
+COPY .. .
 
 RUN go mod download
 
