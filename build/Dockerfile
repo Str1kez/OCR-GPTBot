@@ -4,11 +4,11 @@ RUN apk add --no-cache tesseract-ocr-dev tesseract-ocr-data-rus g++
 
 WORKDIR /app
 
-COPY .. .
+COPY . .
 
 RUN go mod download
 
-RUN go build -o ./.bin/app ./cmd/tesseract/main.go
+RUN go build -o ./.bin/app ./cmd/bot/main.go
 
 FROM alpine:3.17
 
