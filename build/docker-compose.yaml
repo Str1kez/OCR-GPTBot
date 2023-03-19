@@ -4,5 +4,5 @@ services:
     build: .
     env_file:
       - ../.env
-    volumes:
-      - "../config:/app/config"
+    # volumes:
+    #   - "../config:/app/config"

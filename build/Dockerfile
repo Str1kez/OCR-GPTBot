@@ -17,6 +17,7 @@ RUN apk add --no-cache tesseract-ocr-dev tesseract-ocr-data-rus
 WORKDIR /app
 
 COPY --from=builder /app/.bin/app .
+COPY ./config ./config
 
 # COPY ./photo_2023-03-13_02-21-14.jpg ./photo_2023-03-13_02-21-14.jpg 
 

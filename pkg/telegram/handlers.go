@@ -8,7 +8,6 @@ import (
 func (b *Bot) InitHandlers() {
 	authorizedGroup := b.bot.Group()
 	authorizedGroup.Use(middleware.Whitelist(b.config.Admins...))
-	authorizedGroup.Use(PrivateChatOnly)
 
 	authorizedGroup.Handle(telebot.OnText, b.completionOnTextHandler)
 	authorizedGroup.Handle(telebot.OnPhoto, b.completionOnPhotoHandler)

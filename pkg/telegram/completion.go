@@ -1,8 +1,9 @@
 package telegram
 
 import (
-	"fmt"
 	"io"
+
+	log "github.com/sirupsen/logrus"
 
 	"gopkg.in/telebot.v3"
 )
@@ -10,13 +11,15 @@ import (
 func (b *Bot) textCompletion(c telebot.Context) error {
 	content, err := b.completionClient.PerformCompletion(c.Text())
 	if err != nil {
-		fmt.Printf("Error occured in completion: %v\n", err)
+		log.Errorf("Error occured in completion: %v\n", err)
 		return errCompletion
 	}
+	log.Debugln("Completion success")
 	if err = c.Send(content); err != nil {
-		fmt.Printf("Error occured in sending data to user: %v\n", err)
+		log.Errorf("Error occured in sending data to user: %v\n", err)
 		return errSending
 	}
+	log.Debugln("Message has been sent")
 	return nil
 }
 
@@ -24,15 +27,23 @@ func (b *Bot) photoCompletion(c telebot.Context) error {
 	file := c.Message().Photo.MediaFile()
 	bytesPhoto, err := b.getPhotoInByte(file)
 	if err != nil {
-		fmt.Println("error in convert to bytes")
+		log.Errorf("error in convert to bytes: %v\n", err)
 		return errConverting
 	}
+	log.Debugln("Photo has been converted in bytes")
 	text, err := b.recognitionClient.RecognitionFromBytes(bytesPhoto)
 	if err != nil {
-		fmt.Println("error in parsing text from image", err)
+		log.Errorf("error in parsing text from image: %v\n", err)
 		return errParsing
 	}
-	c.Message().Text = text
+	log.Debugln("Text has been parsed")
+	go func() {
+		if err := c.Send(text); err != nil {
+			log.Errorf("error in text recognition response to client: %v\n", err)
+		}
+	}()
+	c.Message().Text = c.Message().Caption + " " + text
+	log.Debugf("Recognized text: %v\n", c.Message().Text)
 	b.textCompletion(c)
 	return nil
 }
@@ -40,9 +51,10 @@ func (b *Bot) photoCompletion(c telebot.Context) error {
 func (b *Bot) getPhotoInByte(file *telebot.File) ([]byte, error) {
 	photo, err := b.bot.File(file)
 	if err != nil {
-		fmt.Println("error in downloading")
+		log.Errorf("error in downloading: %v\n", err)
 		return nil, err
 	}
+	log.Debugln("File has been downloaded")
 	defer photo.Close()
 	return io.ReadAll(photo)
 }

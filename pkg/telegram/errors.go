@@ -3,6 +3,7 @@ package telegram
 import (
 	"errors"
 
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
 
@@ -25,4 +26,5 @@ func (b *Bot) errorHandler(chatId int64, e error) {
 	case errParsing:
 		b.bot.Send(chat, b.config.Errors.Parsing)
 	}
+	log.Debugln("error has been handled")
 }

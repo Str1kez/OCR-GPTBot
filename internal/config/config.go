@@ -1,6 +1,9 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	OpenAIToken string    `mapstructure:"OPENAI_TOKEN"`
@@ -39,28 +42,34 @@ func NewConfig() (*Config, error) {
 
 	err := parseEnv()
 	if err != nil {
+		log.Errorf("Error in parsing env data: %v\n", err)
 		return nil, err
 	}
 
 	err = viper.Unmarshal(&config)
 	if err != nil {
+		log.Errorf("Error in unmarshalling env data: %v\n", err)
 		return nil, err
 	}
 	err = viper.Unmarshal(&config.Bot)
 	if err != nil {
+		log.Errorf("Error in unmarshalling env data: %v\n", err)
 		return nil, err
 	}
 	err = viper.Unmarshal(&config.OCR)
 	if err != nil {
+		log.Errorf("Error in unmarshalling env data: %v\n", err)
 		return nil, err
 	}
 
 	err = parseConfig()
 	if err != nil {
+		log.Errorf("Error in parsing yaml config: %v\n", err)
 		return nil, err
 	}
 	err = viper.Unmarshal(&config)
 	if err != nil {
+		log.Errorf("Error in unmarshalling yaml config: %v\n", err)
 		return nil, err
 	}
 	return &config, nil
