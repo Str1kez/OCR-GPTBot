@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"github.com/Str1kez/chatGPT-bot/internal/config"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
 
@@ -30,4 +31,26 @@ func NewBot(settings telebot.Settings, config *config.BotConfig, chat completion
 
 func (b *Bot) Start() {
 	b.bot.Start()
+}
+
+func (b *Bot) sendToAdmins(message string) error {
+
+	for _, admin := range b.config.Admins {
+		user := telebot.User{ID: admin}
+		if _, err := b.bot.Send(&user, message); err != nil {
+			log.Errorf("Couldn't notify admin: ID=%d\n", user.ID)
+			return err
+		}
+	}
+	return nil
+}
+
+func (b *Bot) OnStartup() error {
+	b.bot.Use(PrivateChatOnly)
+	// b.bot.Use(Logging(log.New()))
+	if err := b.sendToAdmins("Бот начал работу"); err != nil {
+		return err
+	}
+	log.Debugln("Admins have been notificated")
+	return nil
 }

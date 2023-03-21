@@ -23,7 +23,7 @@ func (b *Bot) textCompletion(c telebot.Context) error {
 	return nil
 }
 
-func (b *Bot) photoCompletion(c telebot.Context) error {
+func (b *Bot) textRecognition(c telebot.Context) error {
 	file := c.Message().Photo.MediaFile()
 	bytesPhoto, err := b.getPhotoInByte(file)
 	if err != nil {
@@ -37,14 +37,11 @@ func (b *Bot) photoCompletion(c telebot.Context) error {
 		return errParsing
 	}
 	log.Debugln("Text has been parsed")
-	go func() {
-		if err := c.Send(text); err != nil {
-			log.Errorf("error in text recognition response to client: %v\n", err)
-		}
-	}()
-	c.Message().Text = c.Message().Caption + " " + text
-	log.Debugf("Recognized text: %v\n", c.Message().Text)
-	b.textCompletion(c)
+	log.Debugf("Recognized text: %v\n", text)
+	if err := c.Send(text); err != nil {
+		log.Errorf("error in text recognition response to client: %v\n", err)
+	}
+	log.Debugln("Text has been sent to user")
 	return nil
 }
 

@@ -14,6 +14,7 @@ type Config struct {
 type BotConfig struct {
 	Token    string        `mapstructure:"BOT_TOKEN"`
 	Admins   []int64       `mapstructure:"ADMINS"`
+	Users    []int64       `mapstructure:"USERS"`
 	Messages MessageConfig `mapstructure:"messages"`
 	Errors   ErrorConfig   `mapstructure:"errors"`
 }
@@ -87,6 +88,9 @@ func parseEnv() error {
 		return err
 	}
 	if err := viper.BindEnv("ADMINS"); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("USERS"); err != nil {
 		return err
 	}
 	if err := viper.BindEnv("YANDEX_OCR_TOKEN"); err != nil {

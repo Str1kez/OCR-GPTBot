@@ -46,12 +46,17 @@ func main() {
 	recognitionClient := ocr.NewYandexOCRClient(&cfg.OCR)
 
 	botSettings := telebot.Settings{
-		Token:  cfg.Bot.Token,
-		Poller: &telebot.LongPoller{Timeout: time.Minute},
+		Token:     cfg.Bot.Token,
+		Poller:    &telebot.LongPoller{Timeout: time.Minute},
+		ParseMode: telebot.ModeHTML, // https://core.telegram.org/bots/api#html-style
 	}
 	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient)
 	if err != nil {
 		log.Fatalf("Couldn't start bot: %v\n", err)
+	}
+
+	if err = bot.OnStartup(); err != nil {
+		log.Errorf("Couldn't handle startup routines: %v\n", err)
 	}
 
 	bot.InitCommands()
