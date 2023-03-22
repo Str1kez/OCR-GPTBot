@@ -1,4 +1,8 @@
 services:
+  context:
+    image: redis:7.0.9
+    ports:
+      - 6379:6379
   bot:
     image: str1kez/ocrgpt_bot
     build: .

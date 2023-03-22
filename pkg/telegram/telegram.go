@@ -11,6 +11,7 @@ type Bot struct {
 	config            *config.BotConfig
 	completionClient  completion
 	recognitionClient recognition
+	contextStorage    storage
 }
 
 type recognition interface {
@@ -18,15 +19,31 @@ type recognition interface {
 }
 
 type completion interface {
-	PerformCompletion(text string) (string, error)
+	PerformCompletion(text, userContext string) (string, error)
 }
 
-func NewBot(settings telebot.Settings, config *config.BotConfig, chat completion, recognitionClient recognition) (*Bot, error) {
+type storage interface {
+	Get(key int64) (string, error)
+	Set(key int64, value string) error
+	Del(key int64) error
+}
+
+func NewBot(settings telebot.Settings,
+	config *config.BotConfig,
+	chat completion,
+	recognitionClient recognition,
+	contextStorage storage) (*Bot, error) {
 	bot, err := telebot.NewBot(settings)
 	if err != nil {
 		return nil, err
 	}
-	return &Bot{bot: bot, config: config, completionClient: chat, recognitionClient: recognitionClient}, nil
+	return &Bot{
+			bot:               bot,
+			config:            config,
+			completionClient:  chat,
+			recognitionClient: recognitionClient,
+			contextStorage:    contextStorage},
+		nil
 }
 
 func (b *Bot) Start() {

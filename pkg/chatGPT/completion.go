@@ -11,7 +11,7 @@ func (c *CompletionClient) CreateCompletion(text string) (openai.CompletionRespo
 	return c.client.CreateCompletion(context.Background(), completionRequest)
 }
 
-func (c *CompletionClient) PerformCompletion(text string) (string, error) {
+func (c *CompletionClient) PerformCompletion(text, userContext string) (string, error) {
 	response, err := c.CreateCompletion(text)
 	if err != nil {
 		return "", err
