@@ -9,13 +9,14 @@ type Config struct {
 	OpenAIToken string    `mapstructure:"OPENAI_TOKEN"`
 	OCR         OCRConfig `mapstructure:"ocr"`
 	Bot         BotConfig `mapstructure:"bot"`
+	Storage     StorageConfig
 }
 
 type BotConfig struct {
 	Token    string        `mapstructure:"BOT_TOKEN"`
 	Admins   []int64       `mapstructure:"ADMINS"`
 	Users    []int64       `mapstructure:"USERS"`
-	Messages MessageConfig `mapstructure:"messages"`
+	Commands CommandConfig `mapstructure:"commands"`
 	Errors   ErrorConfig   `mapstructure:"errors"`
 }
 
@@ -26,7 +27,13 @@ type OCRConfig struct {
 	OCRLanguages []string `mapstructure:"ocr_languages"`
 }
 
-type MessageConfig struct {
+type StorageConfig struct {
+	URL      string `mapstructure:"STORAGE_URL"`
+	Password string `mapstructure:"STORAGE_PASSWORD"`
+	DB       int    `mapstructure:"STORAGE_DB"`
+}
+
+type CommandConfig struct {
 	Start string `mapstructure:"start"`
 	Code  string `mapstructure:"code"`
 	Help  string `mapstructure:"help"`
@@ -37,6 +44,7 @@ type ErrorConfig struct {
 	Sending    string `mapstructure:"sending"`
 	Converting string `mapstructure:"converting"`
 	Parsing    string `mapstructure:"parsing"`
+	Context    string `mapstructure:"context"`
 }
 
 func NewConfig() (*Config, error) {
@@ -59,6 +67,11 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 	err = viper.Unmarshal(&config.OCR)
+	if err != nil {
+		log.Errorf("Error in unmarshalling env data: %v\n", err)
+		return nil, err
+	}
+	err = viper.Unmarshal(&config.Storage)
 	if err != nil {
 		log.Errorf("Error in unmarshalling env data: %v\n", err)
 		return nil, err
@@ -97,8 +110,10 @@ func parseEnv() error {
 	if err := viper.BindEnv("YANDEX_OCR_TOKEN"); err != nil {
 		return err
 	}
+	if err := viper.BindEnv("STORAGE_URL"); err != nil {
+		return err
+	}
 	return nil
-
 }
 
 func parseConfig() error {

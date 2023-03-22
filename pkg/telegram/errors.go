@@ -12,6 +12,7 @@ var (
 	errSending    = errors.New("error occured in sending data to user")
 	errConverting = errors.New("error in convert photo to bytes")
 	errParsing    = errors.New("error in parsing text from image")
+	errContext    = errors.New("error in interaction with context storage")
 )
 
 func (b *Bot) errorHandler(chatId int64, e error) {
@@ -25,6 +26,8 @@ func (b *Bot) errorHandler(chatId int64, e error) {
 		b.bot.Send(chat, b.config.Errors.Converting)
 	case errParsing:
 		b.bot.Send(chat, b.config.Errors.Parsing)
+	case errContext:
+		b.bot.Send(chat, b.config.Errors.Context)
 	}
 	log.Debugln("error has been handled")
 }
