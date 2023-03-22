@@ -29,6 +29,7 @@ type OCRConfig struct {
 type MessageConfig struct {
 	Start string `mapstructure:"start"`
 	Code  string `mapstructure:"code"`
+	Help  string `mapstructure:"help"`
 }
 
 type ErrorConfig struct {
