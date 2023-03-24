@@ -54,7 +54,7 @@ func main() {
 	botSettings := telebot.Settings{
 		Token:     cfg.Bot.Token,
 		Poller:    &telebot.LongPoller{Timeout: time.Minute},
-		ParseMode: telebot.ModeMarkdown, // https://core.telegram.org/bots/api#markdown-style
+		// ParseMode: telebot.ModeMarkdown, // https://core.telegram.org/bots/api#markdown-style
 	}
 	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient, storageClient)
 	if err != nil {
