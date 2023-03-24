@@ -31,7 +31,7 @@ func (b *Bot) startCommandHandler(c telebot.Context) error {
 }
 
 func (b *Bot) codeCommandHandler(c telebot.Context) error {
-	message := fmt.Sprintf("Пользователь @%s - `%d`\nХочет зарегистрироваться",
+	message := fmt.Sprintf("Пользователь @%s - %d\nХочет зарегистрироваться",
 		c.Sender().Username, c.Sender().ID)
 	if err := b.sendToAdmins(message); err != nil {
 		return err
