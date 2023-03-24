@@ -28,6 +28,8 @@ func (b *Bot) errorHandler(chatId int64, e error) {
 		b.bot.Send(chat, b.config.Errors.Parsing)
 	case errContext:
 		b.bot.Send(chat, b.config.Errors.Context)
+	default:
+		b.bot.Send(chat, "Непредвиденная ошибка")
 	}
-	log.Debugln("error has been handled")
+	log.Debugf("error has been handled: %v\n", e)
 }
