@@ -31,7 +31,7 @@ func (b *Bot) showContextCommandHandler(c telebot.Context) error {
 		return err
 	}
 	if value == "" {
-		return c.Send("Ваш контекст <b>пуст</b>")
+		return c.Send("Ваш контекст *пуст*")
 	}
 	return c.Send(value)
 }

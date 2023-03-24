@@ -4,8 +4,9 @@ services:
     ports:
       - 6379:6379
   bot:
-    image: str1kez/ocrgpt_bot
+    image: str1kez/ocrgpt_bot:latest
     build: .
+    pull_policy: always
     env_file:
       - ../.env
     # volumes:
