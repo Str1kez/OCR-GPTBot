@@ -1,16 +1,20 @@
 # OCR&GPT Telegram Bot 
+
 ## Installation
 
 ### Dependencies (if you use tesseract)
+
 You need install tesseract
 
-If you builded tesseract from source:
+If tesseract has been built from source:
 
 ```commandline
 export TESSDATA_PREFIX=<your path to tessdata>
 ```
 
-1. Add tokens in .env file, or env variables (you can find it all in .env.example)
+### Start bot
+
+1. Add important data in .env file, or env variables (you can find it all in .env.example)
 
 ```commandline
 make env
@@ -29,9 +33,10 @@ make run
 ```
 
 ## Containerization
+
 ```commandline
 make build-image
 make container
 ```
 
-You can use only `make container` with pulling my image
+You can use only `make container` with pulling my image with Yandex OCR and GPT-3-Turbo
