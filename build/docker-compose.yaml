@@ -1,13 +1,25 @@
+version: '3'
+
 services:
   context:
     image: redis:7.0.9
     ports:
       - 6379:6379
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
   bot:
     image: str1kez/ocrgpt_bot:latest
     build: .
     pull_policy: always
+    restart: on-failure
     env_file:
       - ../.env
     # volumes:
     #   - "../config:/app/config"
+    depends_on:
+      context:
+        condition: service_healthy
