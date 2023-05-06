@@ -1,6 +1,6 @@
 package ocr
 
-import "github.com/Str1kez/chatGPT-bot/internal/config"
+import "github.com/Str1kez/OCR-GPTBot/internal/config"
 
 type TesseractClient struct{}
 type YandexOCRClient struct {

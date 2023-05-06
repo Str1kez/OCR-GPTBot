@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/Str1kez/chatGPT-bot/internal/config"
+	"github.com/Str1kez/OCR-GPTBot/internal/config"
 	"github.com/redis/go-redis/v9"
 )
 

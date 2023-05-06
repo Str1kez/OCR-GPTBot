@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Str1kez/chatGPT-bot/internal/config"
-	chatgpt "github.com/Str1kez/chatGPT-bot/pkg/chatGPT"
-	"github.com/Str1kez/chatGPT-bot/pkg/ocr"
-	"github.com/Str1kez/chatGPT-bot/pkg/storage"
-	"github.com/Str1kez/chatGPT-bot/pkg/telegram"
+	"github.com/Str1kez/OCR-GPTBot/internal/config"
+	chatgpt "github.com/Str1kez/OCR-GPTBot/pkg/chatGPT"
+	"github.com/Str1kez/OCR-GPTBot/pkg/ocr"
+	"github.com/Str1kez/OCR-GPTBot/pkg/storage"
+	"github.com/Str1kez/OCR-GPTBot/pkg/telegram"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
@@ -39,14 +39,13 @@ func main() {
 
 	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatalf("Couldn't initialize config", err)
+		log.Fatalf("Couldn't initialize config: %v\n", err)
 	}
 	log.Infoln("Config has been parsed")
 
 	chatCompletionClient := chatgpt.NewChatCompletionClient(cfg.OpenAIToken)
 	recognitionClient := ocr.NewYandexOCRClient(&cfg.OCR)
 	storageClient, err := storage.NewRedisStorage(&cfg.Storage)
-
 	if err != nil {
 		log.Fatalf("Couldn't connect to storage: %v\n", err)
 	}

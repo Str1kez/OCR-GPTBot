@@ -1,7 +1,7 @@
 package telegram
 
 import (
-	"github.com/Str1kez/chatGPT-bot/internal/config"
+	"github.com/Str1kez/OCR-GPTBot/internal/config"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
