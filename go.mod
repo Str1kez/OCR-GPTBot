@@ -1,4 +1,4 @@
-module github.com/Str1kez/chatGPT-bot
+module github.com/Str1kez/OCR-GPTBot
 
 go 1.20
 
