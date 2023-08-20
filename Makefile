@@ -1,6 +1,10 @@
 .PHONY: build
 .SILENT:
 
+# On Mac
+# export LIBRARY_PATH="/opt/homebrew/lib"
+# export CPATH="/opt/homebrew/include"
+
 env:
 	cp .env.example .env
 build:
@@ -13,4 +17,3 @@ format:
 	gofmt -s -w -l .
 run: build
 	.bin/bot
-

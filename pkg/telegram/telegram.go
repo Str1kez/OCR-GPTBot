@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"github.com/Str1kez/OCR-GPTBot/internal/config"
+	"github.com/sashabaranov/go-openai"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
@@ -20,6 +21,7 @@ type recognition interface {
 
 type completion interface {
 	PerformCompletion(text, userContext string) (string, error)
+	GetCompletionStream(text, userContext string) (*openai.ChatCompletionStream, error)
 }
 
 type storage interface {
@@ -32,7 +34,8 @@ func NewBot(settings telebot.Settings,
 	config *config.BotConfig,
 	chat completion,
 	recognitionClient recognition,
-	contextStorage storage) (*Bot, error) {
+	contextStorage storage,
+) (*Bot, error) {
 	bot, err := telebot.NewBot(settings)
 	if err != nil {
 		return nil, err
@@ -42,7 +45,8 @@ func NewBot(settings telebot.Settings,
 			config:            config,
 			completionClient:  chat,
 			recognitionClient: recognitionClient,
-			contextStorage:    contextStorage},
+			contextStorage:    contextStorage,
+		},
 		nil
 }
 
@@ -51,7 +55,6 @@ func (b *Bot) Start() {
 }
 
 func (b *Bot) sendToAdmins(message string) error {
-
 	for _, admin := range b.config.Admins {
 		user := telebot.User{ID: admin}
 		if _, err := b.bot.Send(&user, message); err != nil {

@@ -91,7 +91,6 @@ func NewConfig() (*Config, error) {
 }
 
 func parseEnv() error {
-	viper.SetConfigFile(".env")
 	if err := viper.ReadInConfig(); err == nil {
 		return nil
 	}

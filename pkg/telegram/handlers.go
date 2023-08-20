@@ -8,7 +8,7 @@ import (
 func (b *Bot) InitHandlers() {
 	authenticatedUsers := append(b.config.Admins, b.config.Users...)
 	authorizedGroup := b.bot.Group()
-	authorizedGroup.Use(middleware.Whitelist(authenticatedUsers...))
+	authorizedGroup.Use(middleware.Whitelist(authenticatedUsers...), Logging())
 
 	authorizedGroup.Handle(telebot.OnText, b.completionOnTextHandler)
 	authorizedGroup.Handle(telebot.OnPhoto, b.recognitionOnPhotoHandler)
