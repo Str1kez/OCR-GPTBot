@@ -2,41 +2,17 @@ package telegram
 
 import (
 	"github.com/Str1kez/OCR-GPTBot/internal/config"
-	"github.com/sashabaranov/go-openai"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
 
-type Bot struct {
-	bot               *telebot.Bot
-	config            *config.BotConfig
-	completionClient  completion
-	recognitionClient recognition
-	contextStorage    storage
-}
-
-type recognition interface {
-	RecognitionFromBytes(photo []byte) (string, error)
-}
-
-type completion interface {
-	PerformCompletion(text, userContext string) (string, error)
-	GetCompletionStream(text, userContext string) (*openai.ChatCompletionStream, error)
-}
-
-type storage interface {
-	Get(key int64) (string, error)
-	Set(key int64, value string) error
-	Del(key int64) error
-}
-
-func NewBot(settings telebot.Settings,
+func NewBot(tgSettings telebot.Settings,
 	config *config.BotConfig,
 	chat completion,
 	recognitionClient recognition,
-	contextStorage storage,
+	settings storage,
 ) (*Bot, error) {
-	bot, err := telebot.NewBot(settings)
+	bot, err := telebot.NewBot(tgSettings)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +21,7 @@ func NewBot(settings telebot.Settings,
 			config:            config,
 			completionClient:  chat,
 			recognitionClient: recognitionClient,
-			contextStorage:    contextStorage,
+			settingsStorage:   settings,
 		},
 		nil
 }

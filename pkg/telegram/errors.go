@@ -8,11 +8,12 @@ import (
 )
 
 var (
-	errCompletion = errors.New("error occured in completion")
-	errSending    = errors.New("error occured in sending data to user")
-	errConverting = errors.New("error in convert photo to bytes")
-	errParsing    = errors.New("error in parsing text from image")
-	errContext    = errors.New("error in interaction with context storage")
+	errCompletion          = errors.New("error occured in completion")
+	errSending             = errors.New("error occured in sending data to user")
+	errConverting          = errors.New("error in convert photo to bytes")
+	errParsing             = errors.New("error in parsing text from image")
+	errContext             = errors.New("error in interaction with context storage")
+	errInterfaceConversion = errors.New("error in interface conversion")
 )
 
 func (b *Bot) errorHandler(chatId int64, e error) {

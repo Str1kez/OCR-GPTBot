@@ -6,8 +6,8 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-func (y *YandexOCRClient) RecognitionFromBytes(photo []byte) (string, error) {
-	responseBody, err := y.AnalyzeRequest(photo)
+func (y *YandexOCRClient) GetTextFromImage(image []byte) (string, error) {
+	responseBody, err := y.AnalyzeRequest(image)
 	if err != nil {
 		return "", err
 	}

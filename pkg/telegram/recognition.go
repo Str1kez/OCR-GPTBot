@@ -16,7 +16,7 @@ func (b *Bot) textRecognition(c telebot.Context) error {
 		return errConverting
 	}
 	log.Debugln("Photo has been converted in bytes")
-	text, err := b.recognitionClient.RecognitionFromBytes(bytesPhoto)
+	text, err := b.recognitionClient.GetTextFromImage(bytesPhoto)
 	if err != nil {
 		log.Errorf("error in parsing text from image: %v\n", err)
 		return errParsing

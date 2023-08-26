@@ -1,16 +1,18 @@
 version: '3'
 
 services:
-  context:
-    image: redis:7.0.9
-    ports:
-      - 6379:6379
+  db:
+    image: redis/redis-stack-server:latest
+    container_name: settings_db
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
       timeout: 3s
       retries: 5
+    ports:
+      - "6379:6379"
+#      - "8001:8001"  -- with web-server on dev
   bot:
     image: str1kez/ocrgpt_bot:latest
     build: .
@@ -21,5 +23,5 @@ services:
     # volumes:
     #   - "../config:/app/config"
     depends_on:
-      context:
+      db:
         condition: service_healthy
