@@ -49,6 +49,14 @@ func (s *RedisStorage) GetAll(userId int64) (telegram.Settings, error) {
 	documentName := fmt.Sprintf("user_settings:%d", userId)
 	data, err := s.handler.JSONGet(documentName, ".")
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			settings := telegram.GetDefaultSettings()
+			err = s.SetAll(userId, settings)
+			if err != nil {
+				return telegram.Settings{}, err
+			}
+			return settings, nil
+		}
 		log.Errorf("Couldn't get user settings. Document: %s\n%v\n", documentName, err)
 		return telegram.Settings{}, err
 	}

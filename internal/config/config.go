@@ -34,9 +34,10 @@ type StorageConfig struct {
 }
 
 type CommandConfig struct {
-	Start string `mapstructure:"start"`
-	Code  string `mapstructure:"code"`
-	Help  string `mapstructure:"help"`
+	Start        string `mapstructure:"start"`
+	Code         string `mapstructure:"code"`
+	Help         string `mapstructure:"help"`
+	SettingsHelp string `mapstructure:"settings_help"`
 }
 
 type ErrorConfig struct {
@@ -45,6 +46,7 @@ type ErrorConfig struct {
 	Converting string `mapstructure:"converting"`
 	Parsing    string `mapstructure:"parsing"`
 	Context    string `mapstructure:"context"`
+	Settings   string `mapstructure:"settings"`
 }
 
 func NewConfig() (*Config, error) {

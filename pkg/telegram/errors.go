@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	errCompletion          = errors.New("error occured in completion")
-	errSending             = errors.New("error occured in sending data to user")
-	errConverting          = errors.New("error in convert photo to bytes")
-	errParsing             = errors.New("error in parsing text from image")
-	errContext             = errors.New("error in interaction with context storage")
-	errInterfaceConversion = errors.New("error in interface conversion")
+	errCompletion = errors.New("error occured in completion")
+	errSending    = errors.New("error occured in sending data to user")
+	errConverting = errors.New("error in convert photo to bytes")
+	errParsing    = errors.New("error in parsing text from image")
+	errContext    = errors.New("error in interaction with context storage")
+	errSettings   = errors.New("error in interaction with storage settings")
 )
 
 func (b *Bot) errorHandler(chatId int64, e error) {
@@ -31,6 +31,8 @@ func (b *Bot) errorHandler(chatId int64, e error) {
 		_, err = b.bot.Send(chat, b.config.Errors.Parsing)
 	case errors.Is(e, errContext):
 		_, err = b.bot.Send(chat, b.config.Errors.Context)
+	case errors.Is(e, errSettings):
+		_, err = b.bot.Send(chat, b.config.Errors.Settings)
 	default:
 		_, err = b.bot.Send(chat, "Непредвиденная ошибка")
 	}
