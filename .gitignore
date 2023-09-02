@@ -29,3 +29,8 @@ _testmain.go
 # Env files and builded app
 .bin/
 .env
+.local.env
+
+# IDE folders
+.idea/
+.vscode/

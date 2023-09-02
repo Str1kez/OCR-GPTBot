@@ -13,23 +13,32 @@ var (
 	errConverting = errors.New("error in convert photo to bytes")
 	errParsing    = errors.New("error in parsing text from image")
 	errContext    = errors.New("error in interaction with context storage")
+	errSettings   = errors.New("error in interaction with storage settings")
 )
 
 func (b *Bot) errorHandler(chatId int64, e error) {
 	chat := telebot.ChatID(chatId)
-	switch e {
-	case errCompletion:
-		b.bot.Send(chat, b.config.Errors.Completion)
-	case errSending:
-		b.bot.Send(chat, b.config.Errors.Sending)
-	case errConverting:
-		b.bot.Send(chat, b.config.Errors.Converting)
-	case errParsing:
-		b.bot.Send(chat, b.config.Errors.Parsing)
-	case errContext:
-		b.bot.Send(chat, b.config.Errors.Context)
+	var err error = nil
+
+	switch {
+	case errors.Is(e, errCompletion):
+		_, err = b.bot.Send(chat, b.config.Errors.Completion)
+	case errors.Is(e, errSending):
+		_, err = b.bot.Send(chat, b.config.Errors.Sending)
+	case errors.Is(e, errConverting):
+		_, err = b.bot.Send(chat, b.config.Errors.Converting)
+	case errors.Is(e, errParsing):
+		_, err = b.bot.Send(chat, b.config.Errors.Parsing)
+	case errors.Is(e, errContext):
+		_, err = b.bot.Send(chat, b.config.Errors.Context)
+	case errors.Is(e, errSettings):
+		_, err = b.bot.Send(chat, b.config.Errors.Settings)
 	default:
-		b.bot.Send(chat, "Непредвиденная ошибка")
+		_, err = b.bot.Send(chat, "Непредвиденная ошибка")
+	}
+
+	if err != nil {
+		log.Fatalf("Error on error handling: %v\n", err)
 	}
 	log.Debugf("error has been handled: %v\n", e)
 }

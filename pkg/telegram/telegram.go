@@ -6,34 +6,13 @@ import (
 	"gopkg.in/telebot.v3"
 )
 
-type Bot struct {
-	bot               *telebot.Bot
-	config            *config.BotConfig
-	completionClient  completion
-	recognitionClient recognition
-	contextStorage    storage
-}
-
-type recognition interface {
-	RecognitionFromBytes(photo []byte) (string, error)
-}
-
-type completion interface {
-	PerformCompletion(text, userContext string) (string, error)
-}
-
-type storage interface {
-	Get(key int64) (string, error)
-	Set(key int64, value string) error
-	Del(key int64) error
-}
-
-func NewBot(settings telebot.Settings,
+func NewBot(tgSettings telebot.Settings,
 	config *config.BotConfig,
 	chat completion,
 	recognitionClient recognition,
-	contextStorage storage) (*Bot, error) {
-	bot, err := telebot.NewBot(settings)
+	settings storage,
+) (*Bot, error) {
+	bot, err := telebot.NewBot(tgSettings)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +21,8 @@ func NewBot(settings telebot.Settings,
 			config:            config,
 			completionClient:  chat,
 			recognitionClient: recognitionClient,
-			contextStorage:    contextStorage},
+			settingsStorage:   settings,
+		},
 		nil
 }
 
@@ -51,7 +31,6 @@ func (b *Bot) Start() {
 }
 
 func (b *Bot) sendToAdmins(message string) error {
-
 	for _, admin := range b.config.Admins {
 		user := telebot.User{ID: admin}
 		if _, err := b.bot.Send(&user, message); err != nil {
