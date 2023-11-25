@@ -1,11 +1,11 @@
 module github.com/Str1kez/OCR-GPTBot
 
-go 1.20
+go 1.21
 
 require (
 	github.com/itchyny/gojq v0.12.12
 	github.com/nitishm/go-rejson/v4 v4.1.1-0.20230331060235-d2aa875760e4
-	github.com/otiai10/gosseract/v2 v2.4.0
+	github.com/otiai10/gosseract/v2 v2.4.1
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/sashabaranov/go-openai v1.4.1
 	github.com/sirupsen/logrus v1.9.0

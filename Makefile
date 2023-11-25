@@ -14,6 +14,6 @@ build-image:
 container:
 	docker compose -f build/docker-compose.yaml up -d --remove-orphans
 format:
-	gofmt -s -w -l .
+	gofumpt -w .
 run: build
 	.bin/bot

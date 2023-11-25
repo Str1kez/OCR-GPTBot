@@ -2,14 +2,7 @@ repos:
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.1
     hooks:
-      - id: go-fumpt
-        args: [-w]
-        name: formatting
-      - id: go-vet
-        name: args suspicious
-        stages: [manual]
+      - id: golangci-lint
+        name: default linters and checkers
       - id: go-mod-tidy
         name: normalize go.mod
-      - id: go-imports
-        name: imports organization
-        args: [-w]
