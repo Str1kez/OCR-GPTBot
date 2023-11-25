@@ -1,7 +1,7 @@
 package chatgpt
 
 import (
-	ctx "context"
+	"context"
 
 	"github.com/Str1kez/OCR-GPTBot/pkg/telegram"
 
@@ -9,7 +9,7 @@ import (
 )
 
 func (c *ChatCompletionClient) GetCompletionText(text string, settings telegram.Settings) (string, error) {
-	ctx := ctx.Background()
+	ctx := context.Background()
 	completionRequest := generateChatCompletionRequest(text, settings.Context, settings.Temperature, settings.FrequencyPenalty, settings.Stream)
 	response, err := c.client.CreateChatCompletion(ctx, completionRequest)
 	if err != nil {
@@ -19,7 +19,7 @@ func (c *ChatCompletionClient) GetCompletionText(text string, settings telegram.
 }
 
 func (c *ChatCompletionClient) GetCompletionStream(text string, settings telegram.Settings) (*openai.ChatCompletionStream, error) {
-	ctx := ctx.Background()
+	ctx := context.Background()
 	request := generateChatCompletionRequest(text, settings.Context, settings.Temperature, settings.FrequencyPenalty, settings.Stream)
 	return c.client.CreateChatCompletionStream(ctx, request)
 }

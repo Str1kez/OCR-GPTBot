@@ -1,19 +1,30 @@
 package ocr
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/otiai10/gosseract/v2"
+	log "github.com/sirupsen/logrus"
 )
 
-func (t *TesseractClient) GetTextFromImage(image []byte) (string, error) {
+func (t *TesseractClient) GetTextFromImage(image []byte) (result string, err error) {
 	client := gosseract.NewClient()
-	defer client.Close()
-	client.SetLanguage("eng", "rus")
-	err := client.SetImageFromBytes(image)
+	defer func() {
+		if deferErr := client.Close(); deferErr != nil {
+			log.Errorln("error in closing tesseract client")
+			err = errors.Join(err, deferErr)
+		}
+	}()
+
+	err = client.SetLanguage("eng", "rus")
 	if err != nil {
-		fmt.Println("error in setting image")
-		return "", err
+		log.Errorln("error in setting language")
+		return
+	}
+	err = client.SetImageFromBytes(image)
+	if err != nil {
+		log.Errorln("error in setting image")
+		return
 	}
 	return client.Text()
 }

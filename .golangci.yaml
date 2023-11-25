@@ -1,0 +1,7 @@
+linters:
+  enable:
+    - gofumpt
+    - goimports
+    - gomoddirectives
+issues:
+  fix: true

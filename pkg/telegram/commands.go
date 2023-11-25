@@ -6,7 +6,7 @@ import (
 	"gopkg.in/telebot.v3"
 )
 
-func (b *Bot) InitCommands() {
+func (b *Bot) InitCommands() error {
 	startCommand := telebot.Command{Text: "start", Description: "Начало работы"}
 	codeCommand := telebot.Command{Text: "code", Description: "Получение кода для аутентификации"}
 	helpCommand := telebot.Command{Text: "help", Description: "Помощь"}
@@ -19,11 +19,14 @@ func (b *Bot) InitCommands() {
 	freqPenaltyCommand := telebot.Command{Text: "freq_penalty", Description: "Задать Frequency Penalty"}
 	defaultSettingsCommand := telebot.Command{Text: "settings_default", Description: "Установить настройки по умолчанию"}
 
-	b.bot.SetCommands([]telebot.Command{
+	err := b.bot.SetCommands([]telebot.Command{
 		startCommand, codeCommand,
 		helpCommand, helpSettingsCommand, settingsCommand, contextCommand,
 		removeContextCommand, streamCommand, temperatureCommand, freqPenaltyCommand, defaultSettingsCommand,
 	})
+	if err != nil {
+		return err
+	}
 	b.bot.Handle("/start", b.startCommandHandler)
 	b.bot.Handle("/code", b.codeCommandHandler)
 	b.bot.Handle("/help", b.helpCommandHandler)
@@ -35,6 +38,7 @@ func (b *Bot) InitCommands() {
 	b.bot.Handle("/temperature", b.setTemperatureCommandHandler)
 	b.bot.Handle("/freq_penalty", b.setFrequencyPenaltyCommandHandler)
 	b.bot.Handle("/settings_default", b.setDefaultSettingsCommandHandler)
+	return nil
 }
 
 func (b *Bot) startCommandHandler(c telebot.Context) error {

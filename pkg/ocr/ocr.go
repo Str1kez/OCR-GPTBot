@@ -2,10 +2,12 @@ package ocr
 
 import "github.com/Str1kez/OCR-GPTBot/internal/config"
 
-type TesseractClient struct{}
-type YandexOCRClient struct {
-	config *config.OCRConfig
-}
+type (
+	TesseractClient struct{}
+	YandexOCRClient struct {
+		config *config.OCRConfig
+	}
+)
 
 func NewTesseractClient() *TesseractClient {
 	return &TesseractClient{}
