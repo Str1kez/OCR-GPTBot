@@ -1,4 +1,4 @@
-name: ci
+name: Build and push to Docker Hub
 
 on:
   workflow_run:
