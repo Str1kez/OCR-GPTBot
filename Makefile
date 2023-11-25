@@ -13,7 +13,11 @@ build-image:
 	docker build . -t str1kez/ocrgpt_bot -f build/Dockerfile
 container:
 	docker compose -f build/docker-compose.yaml up -d --remove-orphans
+db:
+	docker compose -f build/docker-compose.yaml up -d --remove-orphans db
 format:
 	gofumpt -w .
 run: build
-	.bin/bot
+	MODE=dev .bin/bot
+prod-run: build
+	MODE=prod .bin/bot
