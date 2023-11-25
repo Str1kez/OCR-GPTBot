@@ -64,7 +64,9 @@ func main() {
 		log.Errorf("Couldn't handle startup routines: %v\n", err)
 	}
 
-	bot.InitCommands()
+	if err = bot.InitCommands(); err != nil {
+		log.Fatalf("Couldn't set commands: %v\n", err)
+	}
 	bot.InitHandlers()
 	log.Infoln("Bot is working")
 	bot.Start()

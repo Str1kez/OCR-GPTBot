@@ -1,8 +1,6 @@
 package telegram
 
 import (
-	"strings"
-
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
@@ -23,18 +21,4 @@ func (b *Bot) removeContextCommandHandler(c telebot.Context) error {
 		return err
 	}
 	return c.Send("Контекст теперь пустой")
-}
-
-func (b *Bot) showContextCommandHandler(c telebot.Context) error {
-	data, err := b.settingsStorage.Get(c.Sender().ID, "context")
-	if err != nil {
-		log.Errorf("Error in context handler: %v\n", err)
-		b.errorHandler(c.Chat().ID, errContext)
-		return err
-	}
-	value := strings.Trim(string(data), "\"")
-	if value == "" {
-		return c.Send("Ваш контекст пуст")
-	}
-	return c.Send(value)
 }

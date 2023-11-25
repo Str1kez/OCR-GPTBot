@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -93,6 +95,11 @@ func NewConfig() (*Config, error) {
 }
 
 func parseEnv() error {
+	if os.Getenv("MODE") == "dev" {
+		viper.SetConfigFile(".local.env")
+	} else {
+		viper.SetConfigFile(".env")
+	}
 	if err := viper.ReadInConfig(); err == nil {
 		return nil
 	}

@@ -1,0 +1,9 @@
+run:
+  skip-files:
+    - pkg/ocr/tesseract.go
+  allow-parallel-runners: true
+linters:
+  enable:
+    - gofumpt
+    - goimports
+    - gomoddirectives

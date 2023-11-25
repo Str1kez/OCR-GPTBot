@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"context"
+	ctx "context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -19,9 +19,9 @@ import (
 func NewRedisStorage(config *config.StorageConfig) (*RedisStorage, error) {
 	redisClient := redis.NewClient(&redis.Options{Addr: config.URL, Password: config.Password, DB: config.DB})
 	rejsonHandler := rejson.NewReJSONHandler()
-	rejsonHandler.SetGoRedisClient(redisClient)
+	rejsonHandler.SetGoRedisClientWithContext(ctx.Background(), redisClient)
 	storage := RedisStorage{client: redisClient, handler: rejsonHandler}
-	if err := storage.client.Ping(context.Background()).Err(); err != nil {
+	if err := storage.client.Ping(ctx.Background()).Err(); err != nil {
 		return nil, err
 	}
 	return &storage, nil
@@ -129,7 +129,7 @@ func (s *RedisStorage) Del(userId int64, key string) error {
 
 func (s *RedisStorage) DelAll(userId int64) error {
 	documentName := fmt.Sprintf("user_settings:%d", userId)
-	err := s.client.Del(context.Background(), documentName).Err()
+	err := s.client.Del(ctx.Background(), documentName).Err()
 	if err != nil {
 		log.Errorf("Couldn't delete data. Document: %s\n%v\n", documentName, err)
 	}

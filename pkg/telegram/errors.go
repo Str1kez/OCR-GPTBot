@@ -18,7 +18,7 @@ var (
 
 func (b *Bot) errorHandler(chatId int64, e error) {
 	chat := telebot.ChatID(chatId)
-	var err error = nil
+	var err error
 
 	switch {
 	case errors.Is(e, errCompletion):
