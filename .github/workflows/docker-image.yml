@@ -1,9 +1,13 @@
 name: ci
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - golangci-lint
+    types:
+      - completed
     branches:
-      - "master"
+      - master
 
 jobs:
   build:
