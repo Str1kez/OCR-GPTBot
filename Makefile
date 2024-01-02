@@ -21,3 +21,6 @@ run: build
 	MODE=dev .bin/bot
 prod-run: build
 	MODE=prod .bin/bot
+ngrok:
+	# for mac only, use --net=host instead host.docker.internal on linux
+	docker run --rm -it --env-file .local.env ngrok/ngrok:latest http host.docker.internal:80

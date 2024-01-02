@@ -1,6 +1,8 @@
 package telegram
 
 import (
+	"errors"
+
 	"github.com/Str1kez/OCR-GPTBot/internal/config"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
@@ -49,4 +51,14 @@ func (b *Bot) OnStartup() error {
 	}
 	log.Debugln("Admins have been notificated")
 	return nil
+}
+
+func (b *Bot) OnShutdown() error {
+	err := b.sendToAdmins("Бот закончил работу")
+	errWebhook := b.bot.RemoveWebhook()
+	errStorage := b.settingsStorage.Close()
+	// TODO: See this issue: https://github.com/tucnak/telebot/issues/584
+	b.bot.Stop()
+	log.Infoln("Bot has been stopped")
+	return errors.Join(err, errWebhook, errStorage)
 }

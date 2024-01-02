@@ -37,4 +37,5 @@ type storage interface {
 	SetAll(userId int64, settings Settings) error
 	Del(userId int64, key string) error
 	DelAll(userId int64) error
+	Close() error
 }
