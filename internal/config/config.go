@@ -15,11 +15,14 @@ type Config struct {
 }
 
 type BotConfig struct {
-	Token    string        `mapstructure:"BOT_TOKEN"`
-	Admins   []int64       `mapstructure:"ADMINS"`
-	Users    []int64       `mapstructure:"USERS"`
-	Commands CommandConfig `mapstructure:"commands"`
-	Errors   ErrorConfig   `mapstructure:"errors"`
+	Token             string        `mapstructure:"BOT_TOKEN"`
+	Admins            []int64       `mapstructure:"ADMINS"`
+	Users             []int64       `mapstructure:"USERS"`
+	Poller            string        `mapstructure:"POLLER"`
+	WebhookURL        string        `mapstructure:"WEBHOOK_URL"`
+	ListenWebhookPort uint64        `mapstructure:"LISTEN_WEBHOOK_PORT"`
+	Commands          CommandConfig `mapstructure:"commands"`
+	Errors            ErrorConfig   `mapstructure:"errors"`
 }
 
 type OCRConfig struct {
@@ -113,6 +116,15 @@ func parseEnv() error {
 		return err
 	}
 	if err := viper.BindEnv("USERS"); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("POLLER"); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("WEBHOOK_URL"); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("LISTEN_WEBHOOK_PORT"); err != nil {
 		return err
 	}
 	if err := viper.BindEnv("YANDEX_OCR_TOKEN"); err != nil {

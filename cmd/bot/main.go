@@ -2,10 +2,11 @@ package main
 
 import (
 	"os"
+	"os/signal"
 	"path"
 	"runtime"
 	"strconv"
-	"time"
+	"syscall"
 
 	"github.com/Str1kez/OCR-GPTBot/internal/config"
 	chatgpt "github.com/Str1kez/OCR-GPTBot/pkg/chatGPT"
@@ -50,9 +51,16 @@ func main() {
 		log.Fatalf("Couldn't connect to storage: %v\n", err)
 	}
 
+	terminate := make(chan os.Signal, 1)
+	signal.Notify(terminate, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
+	poller, err := telegram.GetPoller(cfg.Bot)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	botSettings := telebot.Settings{
 		Token:  cfg.Bot.Token,
-		Poller: &telebot.LongPoller{Timeout: time.Minute},
+		Poller: poller,
 		// ParseMode: telebot.ModeMarkdown, // https://core.telegram.org/bots/api#markdown-style
 	}
 	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient, storageClient)
@@ -69,5 +77,10 @@ func main() {
 	}
 	bot.InitHandlers()
 	log.Infoln("Bot is working")
-	bot.Start()
+	go bot.Start()
+
+	<-terminate
+	if err := bot.OnShutdown(); err != nil {
+		log.Errorf("Error on shutdown process: %v\n", err)
+	}
 }

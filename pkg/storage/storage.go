@@ -136,3 +136,7 @@ func (s *RedisStorage) DelAll(userId int64) error {
 	log.Debugln("Data removed")
 	return err
 }
+
+func (s *RedisStorage) Close() error {
+	return s.client.Close()
+}
