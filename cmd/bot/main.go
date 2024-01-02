@@ -54,10 +54,7 @@ func main() {
 	terminate := make(chan os.Signal, 1)
 	signal.Notify(terminate, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
-	poller, err := telegram.GetPoller(cfg.Bot)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	poller := telegram.GetPoller(cfg.Bot)
 	botSettings := telebot.Settings{
 		Token:  cfg.Bot.Token,
 		Poller: poller,

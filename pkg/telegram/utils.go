@@ -1,7 +1,6 @@
 package telegram
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -41,16 +40,13 @@ func PrettySettings(s Settings) string {
 	return strings.Join(result, "\n")
 }
 
-func GetPoller(cfg config.BotConfig) (telebot.Poller, error) {
-	switch cfg.Poller {
-	case "long":
-		return &telebot.LongPoller{Timeout: time.Minute}, nil
-	case "webhook":
+func GetPoller(cfg config.BotConfig) telebot.Poller {
+	if cfg.Poller == "webhook" {
 		return &telebot.Webhook{
 			Listen:      ":" + strconv.FormatUint(cfg.ListenWebhookPort, 10),
 			Endpoint:    &telebot.WebhookEndpoint{PublicURL: cfg.WebhookURL},
 			DropUpdates: true,
-		}, nil
+		}
 	}
-	return nil, errors.New("unrecognized type of poller")
+	return &telebot.LongPoller{Timeout: time.Minute}
 }
