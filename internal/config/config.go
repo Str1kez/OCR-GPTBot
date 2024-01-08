@@ -110,10 +110,17 @@ func parseEnv() error {
 	}
 
 	// for docker
-	err := errors.Join(viper.BindEnv("OPENAI_TOKEN"), viper.BindEnv("BOT_TOKEN"),
-		viper.BindEnv("ADMINS"), viper.BindEnv("USERS"), viper.BindEnv("POLLER"),
-		viper.BindEnv("WEBHOOK_URL"), viper.BindEnv("LISTEN_WEBHOOK_PORT"),
-		viper.BindEnv("YANDEX_OCR_TOKEN"), viper.BindEnv("STORAGE_URL"))
+	err := errors.Join(
+		viper.BindEnv("OPENAI_TOKEN"),
+		viper.BindEnv("BOT_TOKEN"),
+		viper.BindEnv("ADMINS"),
+		viper.BindEnv("USERS"),
+		viper.BindEnv("POLLER"),
+		viper.BindEnv("WEBHOOK_URL"),
+		viper.BindEnv("LISTEN_WEBHOOK_PORT"),
+		viper.BindEnv("YANDEX_OCR_TOKEN"),
+		viper.BindEnv("STORAGE_URL"),
+	)
 	return err
 }
 
