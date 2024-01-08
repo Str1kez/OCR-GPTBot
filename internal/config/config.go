@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -101,39 +102,26 @@ func parseEnv() error {
 	if os.Getenv("MODE") == "dev" {
 		viper.SetConfigFile(".local.env")
 	} else {
+		// if you want to start without docker
 		viper.SetConfigFile(".env")
 	}
 	if err := viper.ReadInConfig(); err == nil {
 		return nil
 	}
-	if err := viper.BindEnv("OPENAI_TOKEN"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("BOT_TOKEN"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("ADMINS"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("USERS"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("POLLER"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("WEBHOOK_URL"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("LISTEN_WEBHOOK_PORT"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("YANDEX_OCR_TOKEN"); err != nil {
-		return err
-	}
-	if err := viper.BindEnv("STORAGE_URL"); err != nil {
-		return err
-	}
-	return nil
+
+	// for docker
+	err := errors.Join(
+		viper.BindEnv("OPENAI_TOKEN"),
+		viper.BindEnv("BOT_TOKEN"),
+		viper.BindEnv("ADMINS"),
+		viper.BindEnv("USERS"),
+		viper.BindEnv("POLLER"),
+		viper.BindEnv("WEBHOOK_URL"),
+		viper.BindEnv("LISTEN_WEBHOOK_PORT"),
+		viper.BindEnv("YANDEX_OCR_TOKEN"),
+		viper.BindEnv("STORAGE_URL"),
+	)
+	return err
 }
 
 func parseConfig() error {
