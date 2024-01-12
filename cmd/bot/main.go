@@ -56,8 +56,9 @@ func main() {
 
 	poller := telegram.GetPoller(cfg.Bot)
 	botSettings := telebot.Settings{
-		Token:  cfg.Bot.Token,
-		Poller: poller,
+		Token:       cfg.Bot.Token,
+		Poller:      poller,
+		Synchronous: false,
 		// ParseMode: telebot.ModeMarkdown, // https://core.telegram.org/bots/api#markdown-style
 	}
 	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient, storageClient)
