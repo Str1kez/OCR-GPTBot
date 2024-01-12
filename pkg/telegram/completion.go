@@ -17,14 +17,22 @@ func (b *Bot) textCompletion(c telebot.Context) error {
 		return errContext
 	}
 
-	if userSettings.Stream {
-		return b.streamTextCompletion(c, userSettings)
+	message := c.Message()
+	messageText := message.Text
+
+	repliedMessage := message.ReplyTo
+	if repliedMessage != nil {
+		messageText = repliedMessage.Text + " " + messageText
 	}
-	return b.fullTextCompletion(c, userSettings)
+
+	if userSettings.Stream {
+		return b.streamTextCompletion(c, messageText, userSettings)
+	}
+	return b.fullTextCompletion(c, messageText, userSettings)
 }
 
-func (b *Bot) fullTextCompletion(c telebot.Context, settings Settings) error {
-	content, err := b.completionClient.GetCompletionText(c.Text(), settings)
+func (b *Bot) fullTextCompletion(c telebot.Context, message string, settings Settings) error {
+	content, err := b.completionClient.GetCompletionText(message, settings)
 	if err != nil {
 		log.Errorf("Error occured in completion: %v\n", err)
 		return errCompletion
@@ -38,8 +46,8 @@ func (b *Bot) fullTextCompletion(c telebot.Context, settings Settings) error {
 	return nil
 }
 
-func (b *Bot) streamTextCompletion(c telebot.Context, settings Settings) error {
-	stream, err := b.completionClient.GetCompletionStream(c.Text(), settings)
+func (b *Bot) streamTextCompletion(c telebot.Context, message string, settings Settings) error {
+	stream, err := b.completionClient.GetCompletionStream(message, settings)
 	if err != nil {
 		log.Errorf("Error occured in completion: %v\n", err)
 		return errCompletion
