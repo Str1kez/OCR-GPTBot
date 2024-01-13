@@ -3,6 +3,8 @@ package telegram
 import (
 	"errors"
 
+	"github.com/Str1kez/OCR-GPTBot/internal/config"
+
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v3"
 )
@@ -16,29 +18,35 @@ var (
 	errSettings   = errors.New("error in interaction with storage settings")
 )
 
-func (b *Bot) errorHandler(chatId int64, e error) {
-	chat := telebot.ChatID(chatId)
-	var err error
+func NewErrorHandler(errorConfig config.ErrorConfig) func(err error, c telebot.Context) {
+	return func(err error, c telebot.Context) {
+		if c == nil {
+			log.Warningln(err)
+			return
+		}
 
-	switch {
-	case errors.Is(e, errCompletion):
-		_, err = b.bot.Send(chat, b.config.Errors.Completion)
-	case errors.Is(e, errSending):
-		_, err = b.bot.Send(chat, b.config.Errors.Sending)
-	case errors.Is(e, errConverting):
-		_, err = b.bot.Send(chat, b.config.Errors.Converting)
-	case errors.Is(e, errParsing):
-		_, err = b.bot.Send(chat, b.config.Errors.Parsing)
-	case errors.Is(e, errContext):
-		_, err = b.bot.Send(chat, b.config.Errors.Context)
-	case errors.Is(e, errSettings):
-		_, err = b.bot.Send(chat, b.config.Errors.Settings)
-	default:
-		_, err = b.bot.Send(chat, "Непредвиденная ошибка")
-	}
+		var e error
 
-	if err != nil {
-		log.Fatalf("Error on error handling: %v\n", err)
+		switch {
+		case errors.Is(err, errCompletion):
+			e = c.Send(errorConfig.Completion)
+		case errors.Is(err, errSending):
+			e = c.Send(errorConfig.Sending)
+		case errors.Is(err, errConverting):
+			e = c.Send(errorConfig.Converting)
+		case errors.Is(err, errParsing):
+			e = c.Send(errorConfig.Parsing)
+		case errors.Is(err, errContext):
+			e = c.Send(errorConfig.Context)
+		case errors.Is(err, errSettings):
+			e = c.Send(errorConfig.Settings)
+		default:
+			e = c.Send("Непредвиденная ошибка")
+		}
+		log.Errorln("Update ID:", c.Update().ID, err)
+
+		if e != nil {
+			log.Fatalf("Error on error handling: %v\n", e)
+		}
 	}
-	log.Debugf("error has been handled: %v\n", e)
 }

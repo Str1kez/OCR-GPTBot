@@ -59,6 +59,7 @@ func main() {
 		Token:       cfg.Bot.Token,
 		Poller:      poller,
 		Synchronous: false,
+		OnError:     telegram.NewErrorHandler(cfg.Bot.Errors),
 		// ParseMode: telebot.ModeMarkdown, // https://core.telegram.org/bots/api#markdown-style
 	}
 	bot, err := telegram.NewBot(botSettings, &cfg.Bot, chatCompletionClient, recognitionClient, storageClient)
@@ -67,7 +68,7 @@ func main() {
 	}
 
 	if err = bot.OnStartup(); err != nil {
-		log.Errorf("Couldn't handle startup routines: %v\n", err)
+		log.Fatalf("Couldn't handle startup routines: %v\n", err)
 	}
 
 	if err = bot.InitCommands(); err != nil {
