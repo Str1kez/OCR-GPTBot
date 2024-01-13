@@ -15,17 +15,9 @@ func (b *Bot) InitHandlers() {
 }
 
 func (b *Bot) completionOnTextHandler(c telebot.Context) error {
-	err := b.textCompletion(c)
-	if err != nil {
-		b.errorHandler(c.Chat().ID, err)
-	}
-	return err
+	return b.textCompletion(c)
 }
 
 func (b *Bot) recognitionOnPhotoHandler(c telebot.Context) error {
-	err := b.textRecognition(c)
-	if err != nil {
-		b.errorHandler(c.Chat().ID, err)
-	}
-	return err
+	return b.textRecognition(c)
 }
