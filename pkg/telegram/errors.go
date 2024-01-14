@@ -16,6 +16,7 @@ var (
 	errParsing    = errors.New("error in parsing text from image")
 	errContext    = errors.New("error in interaction with context storage")
 	errSettings   = errors.New("error in interaction with storage settings")
+	ErrNotFound   = errors.New("data in storage not found")
 )
 
 func NewErrorHandler(errorConfig config.ErrorConfig) func(err error, c telebot.Context) {
@@ -39,6 +40,8 @@ func NewErrorHandler(errorConfig config.ErrorConfig) func(err error, c telebot.C
 		case errors.Is(err, errContext):
 			e = c.Send(errorConfig.Context)
 		case errors.Is(err, errSettings):
+			e = c.Send(errorConfig.Settings)
+		case errors.Is(err, ErrNotFound):
 			e = c.Send(errorConfig.Settings)
 		default:
 			e = c.Send("Непредвиденная ошибка")

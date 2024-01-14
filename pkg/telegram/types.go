@@ -31,11 +31,7 @@ type completion interface {
 }
 
 type storage interface {
-	Get(userId int64, key string) ([]byte, error)
-	GetAll(userId int64) (Settings, error)
-	Set(userId int64, key string, value interface{}) error
-	SetAll(userId int64, settings Settings) error
-	Del(userId int64, key string) error
-	DelAll(userId int64) error
+	Get(userId int64) (Settings, error)
+	Set(userId int64, settings Settings) error
 	Close() error
 }
