@@ -11,10 +11,14 @@ import (
 )
 
 func (b *Bot) textCompletion(c telebot.Context) error {
-	userSettings, err := b.settingsStorage.GetAll(c.Sender().ID)
+	userSettings, err := b.settingsStorage.Get(c.Sender().ID)
 	if err != nil {
-		log.Errorf("Couldn't get user settings. User: %d\n%v\n", c.Sender().ID, err)
-		return errContext
+		if errors.Is(err, ErrNotFound) {
+			userSettings = GetDefaultSettings()
+		} else {
+			log.Errorf("Couldn't get user settings. User: %d\n%v\n", c.Sender().ID, err)
+			return errContext
+		}
 	}
 
 	message := c.Message()

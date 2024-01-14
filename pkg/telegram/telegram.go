@@ -2,6 +2,8 @@ package telegram
 
 import (
 	"errors"
+	"strconv"
+	"time"
 
 	"github.com/Str1kez/OCR-GPTBot/internal/config"
 	log "github.com/sirupsen/logrus"
@@ -61,4 +63,15 @@ func (b *Bot) OnShutdown() error {
 	b.bot.Stop()
 	log.Infoln("Bot has been stopped")
 	return errors.Join(err, errWebhook, errStorage)
+}
+
+func GetPoller(cfg config.BotConfig) telebot.Poller {
+	if cfg.Poller == "webhook" {
+		return &telebot.Webhook{
+			Listen:      ":" + strconv.FormatUint(cfg.ListenWebhookPort, 10),
+			Endpoint:    &telebot.WebhookEndpoint{PublicURL: cfg.WebhookURL},
+			DropUpdates: true,
+		}
+	}
+	return &telebot.LongPoller{Timeout: time.Minute}
 }

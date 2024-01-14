@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -9,9 +10,13 @@ import (
 
 func (b *Bot) showSettingsHandler(c telebot.Context) error {
 	userId := c.Sender().ID
-	settings, err := b.settingsStorage.GetAll(userId)
+	settings, err := b.settingsStorage.Get(userId)
 	if err != nil {
-		return err
+		if errors.Is(err, ErrNotFound) {
+			settings = GetDefaultSettings()
+		} else {
+			return err
+		}
 	}
 	humanSettigns := PrettySettings(settings)
 	return c.Send(humanSettigns)
@@ -19,7 +24,7 @@ func (b *Bot) showSettingsHandler(c telebot.Context) error {
 
 func (b *Bot) setDefaultSettingsCommandHandler(c telebot.Context) error {
 	userId := c.Sender().ID
-	if err := b.settingsStorage.DelAll(userId); err != nil {
+	if err := b.settingsStorage.Set(userId, GetDefaultSettings()); err != nil {
 		return err
 	}
 	return c.Send("Установлены настройки по умолчанию")
@@ -27,21 +32,23 @@ func (b *Bot) setDefaultSettingsCommandHandler(c telebot.Context) error {
 
 func (b *Bot) setStreamCommandHandler(c telebot.Context) error {
 	userId := c.Sender().ID
-	data, err := b.settingsStorage.Get(userId, "stream")
+	settings, err := b.settingsStorage.Get(userId)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			settings = GetDefaultSettings()
+		} else {
+			return err
+		}
+	}
+
+	settings.Stream = !settings.Stream
+	err = b.settingsStorage.Set(userId, settings)
 	if err != nil {
 		return err
 	}
-	isStream, err := strconv.ParseBool(string(data))
-	if err != nil {
-		return err
-	}
-	isStream = !isStream
-	err = b.settingsStorage.Set(userId, "stream", isStream)
-	if err != nil {
-		return err
-	}
+
 	status := "Выключен"
-	if isStream {
+	if settings.Stream {
 		status = "Включен"
 	}
 	return c.Send(fmt.Sprintf("Stream-mode %s", status))
@@ -58,8 +65,17 @@ func (b *Bot) setTemperatureCommandHandler(c telebot.Context) error {
 	if (temperature > 1.0) || (temperature < 0) {
 		return c.Send("Допустимый интервал [0; 1]")
 	}
-	err = b.settingsStorage.Set(userId, "temperature", temperature)
+
+	settings, err := b.settingsStorage.Get(userId)
 	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			settings = GetDefaultSettings()
+		} else {
+			return err
+		}
+	}
+	settings.Temperature = temperature
+	if err = b.settingsStorage.Set(userId, settings); err != nil {
 		return err
 	}
 	return c.Send("Temperature установлен")
@@ -76,8 +92,17 @@ func (b *Bot) setFrequencyPenaltyCommandHandler(c telebot.Context) error {
 	if (penalty > 2.0) || (penalty < -2.0) {
 		return c.Send("Допустимый интервал [-2.0; 2.0]")
 	}
-	err = b.settingsStorage.Set(userId, "frequency_penalty", penalty)
+
+	settings, err := b.settingsStorage.Get(userId)
 	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			settings = GetDefaultSettings()
+		} else {
+			return err
+		}
+	}
+	settings.FrequencyPenalty = penalty
+	if err = b.settingsStorage.Set(userId, settings); err != nil {
 		return err
 	}
 	return c.Send("Frequency Penalty установлен")
